@@ -12,8 +12,8 @@
   <!-- CSS Libraries -->
 
   <!-- Template CSS -->
-  <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/components.css">
 </head>
 
 <body>
@@ -29,7 +29,7 @@
         </form>
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-            <img alt="image" src="../assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
+            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
             <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="#" class="dropdown-item has-icon text-danger">
@@ -42,18 +42,18 @@
       <div class="main-sidebar">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="index.html">Sun-3 Management</a>
+            <a href="index.php">Sun-3 Management</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">S3M</a>
+            <a href="index.php">S3M</a>
           </div>
           <ul class="sidebar-menu">
               <li class="menu-header">Dashboard</li>
-              <li><a class="nav-link" href="index.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+              <li><a class="nav-link" href="index.php"><i class="fas fa-home"></i> <span>Home</span></a></li>
               <li class="menu-header">Menu</li>
-              <li><a class="nav-link" href="santri-data.html"><i class="fas fa-table"></i> <span>Santri Data</span></a></li>
-              <li class="active"><a class="nav-link" href="skill-data.html"><i class="fas fa-laptop-code"></i> <span>Skill</span></a></li>
-              <li><a class="nav-link" href="users-data.html"><i class="fas fa-users"></i> <span>Users</span></a></li>
+              <li><a class="nav-link" href="santri-data.php"><i class="fas fa-table"></i> <span>Santri Data</span></a></li>
+              <li class="active"><a class="nav-link" href="skill-data.php"><i class="fas fa-laptop-code"></i> <span>Skill</span></a></li>
+              <li><a class="nav-link" href="users-data.php"><i class="fas fa-users"></i> <span>Users</span></a></li>
             </ul>
         </aside>
       </div>
@@ -64,7 +64,7 @@
           <div class="section-header">
             <h1>Skill Data</h1>
             <div class="section-header-button">
-              <a href="features-post-create-skill.html" class="btn btn-primary">Add New</a>
+              <a href="features-post-create-skill.php" class="btn btn-primary">Add New</a>
             </div>
           </div>
 
@@ -80,27 +80,27 @@
                   <tr>
                     <td>1</td>
                     <td>PHP</td>
-                    <td><a href="features-profile-skill.html" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
+                    <td><a href="features-profile-skill.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
                   </tr>
                   <tr>
                     <td>2</td>
                     <td>Javascript</td>
-                    <td><a href="features-profile-skill.html" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
+                    <td><a href="features-profile-skill.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
                   </tr>
                   <tr>
                     <td>3</td>
                     <td>Python</td>
-                    <td><a href="features-profile-skill.html" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
+                    <td><a href="features-profile-skill.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
                   </tr>
                   <tr>
                     <td>4</td>
                     <td>C++</td>
-                    <td><a href="features-profile-skill.html" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
+                    <td><a href="features-profile-skill.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
                   </tr>
                   <tr>
                     <td>5</td>
                     <td>HTML</td>
-                    <td><a href="features-profile-skill.html" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
+                    <td><a href="features-profile-skill.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
                   </tr>
                 </table>
               </div>
@@ -125,13 +125,13 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="../assets/js/stisla.js"></script>
+  <script src="assets/js/stisla.js"></script>
 
   <!-- JS Libraies -->
 
   <!-- Template JS File -->
-  <script src="../assets/js/scripts.js"></script>
-  <script src="../assets/js/custom.js"></script>
+  <script src="assets/js/scripts.js"></script>
+  <script src="assets/js/custom.js"></script>
 
   <!-- Page Specific JS File -->
 </body>
