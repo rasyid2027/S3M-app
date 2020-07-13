@@ -1,3 +1,57 @@
+<?php 
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+  header('Location: auth-login.php');
+  exit;
+}
+
+require 'functions.php';
+
+$id = $_GET['id'];
+$stmt = $dbh->prepare("SELECT * FROM Users WHERE id = ?");
+$stmt->execute([$id]);
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$usr = $dbh->prepare("SELECT * FROM Users");
+$usr->execute();
+$rowsUser = $usr->fetchAll(PDO::FETCH_ASSOC);
+
+if( isset($_POST['submit']) )
+{
+  $sid = $_POST['sid'];
+  $user = htmlspecialchars(ucwords($_POST['skill']));
+  $query = "UPDATE Skill SET
+              skill = ?
+            WHERE sid = ?
+            ";
+
+  $stmt = $dbh->prepare($query);
+  $stmt->execute([$skill, $sid]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $rows > 0 )
+  {
+    echo "
+          <script>
+            alert('successfully edited data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+  } else {
+    echo "
+          <script>
+            alert('failed to edit data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,9 +86,9 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -85,9 +139,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                            <input type="hidden" class="form-control" name="id" value="<?= $users[0]['id'] ?>" required="">
+                          </div>
                           <div class="form-group col-md-10 col-12">
                             <label>Name</label>
-                            <input type="text" class="form-control" value="Irwansyah Saputra" required="">
+                            <input type="text" class="form-control" name="name" value="<?= $users[0]['name'] ?>" required="">
                             <div class="invalid-feedback">
                               Please fill in the name
                             </div>
@@ -96,7 +153,7 @@
                         <div class="row">
                           <div class="form-group col-md-10 col-12">
                             <label>Username</label>
-                            <input type="text" class="form-control" value="ear_one" required="">
+                            <input type="text" class="form-control" name="username" value="<?= $users[0]['username'] ?>" required="">
                             <div class="invalid-feedback">
                               Please fill in the email
                             </div>
@@ -105,9 +162,10 @@
                         <div class="row">
                           <div class="form-group col-md-10 col-12">
                             <label class="mr-2">Role</label>
-                            <select class="form-control selectric">
-                              <option value="">1. Admin</option>
-                              <option value="">2. Pengurus</option>
+                            <select class="form-control selectric" name="role">
+                            <?php foreach( $rowsUser as $row ) { ?>
+                              <option value="<?= $row['id'] ?>" <?php if( $row['id'] == $users[0]['id'] ) { ?> selected <?php } ?>><?= $row['id'] . ". " . $row['role'] ?></option>
+                            <?php } ?>
                             </select>
                             <div class="invalid-feedback">
                               Please fill in the name

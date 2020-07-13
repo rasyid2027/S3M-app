@@ -1,3 +1,62 @@
+<?php 
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+  header('Location: auth-login.php');
+  exit;
+}
+
+require 'functions.php';
+
+$id = $_GET['id'];
+$stmt = $dbh->prepare("SELECT * FROM Santri WHERE id = ?");
+$stmt->execute([$id]);
+$santri = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$skill = $dbh->prepare("SELECT * FROM Skill");
+$skill->execute();
+$rows = $skill->fetchAll(PDO::FETCH_ASSOC);
+
+if( isset($_POST['submit']) )
+{
+  $id = $_POST['id'];
+  $name = htmlspecialchars(ucwords($_POST['name']));
+  $skill = htmlspecialchars(strtolower($_POST['skill_id']));
+  $region = htmlspecialchars(strtolower($_POST['region']));
+  $query = "UPDATE Santri SET
+              name = ?,
+              skill_id = ?,
+              region = ?
+            WHERE id = ?
+            ";
+
+  $stmt = $dbh->prepare($query);
+  $stmt->execute([$name, $skill, $region, $id]);
+  $santri = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $santri > 0 )
+  {
+    echo "
+          <script>
+            alert('successfully edited data')
+            document.location.href = 'santri-data.php';
+          </script>
+        ";
+  } else {
+    echo "
+          <script>
+            alert('failed to edit data')
+            document.location.href = 'santri-data.php';
+          </script>
+        ";
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,9 +91,9 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -84,42 +143,45 @@
                       <h4>Edit Profile</h4>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <label>Name</label>
-                            <input type="text" class="form-control" value="Ujang" required="">
-                            <div class="invalid-feedback">
-                              Please fill in the name
-                            </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <input type="hidden" class="form-control" name="id" value="<?= $santri[0]['id'] ?>">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <label>Name</label>
+                          <input type="text" class="form-control" name="name" value="<?php echo ucwords($santri[0]['name']) ?>" required="">
+                          <div class="invalid-feedback">
+                            Please fill in the name
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <label class="mr-2">Skill Id</label>
-                            <select class="form-control selectric">
-                              <option value="">1</option>
-                              <option value="">2</option>
-                              <option value="">3</option>
-                              <option value="">4</option>
-                              <option value="">5</option>
-                            </select>
-                            <div class="invalid-feedback">
-                              Please fill in the name
-                            </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <label class="mr-2">Skill Id</label>
+                          <select class="form-control selectric" name="skill_id">
+                            <?php foreach( $rows as $row ) { ?>
+                              <option value="<?php echo $row['sid']; ?>" <?php if( $row['sid'] == $santri[0]['skill_id'] ) { ?> selected <?php } ?> ><?php echo $row['sid'] . ". " . $row['skill']; ?></option>
+                            <?php } ?>
+                          </select>
+                          <div class="invalid-feedback">
+                            Please fill in the name
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <label>Region</label>
-                            <input type="text" class="form-control" value="Yogyakarta" required="">
-                            <div class="invalid-feedback">
-                              Please fill in the email
-                            </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <label>Region</label>
+                          <input type="text" class="form-control" name="region" value="<?php echo ucwords($santri[0]['region']) ?>" required="">
+                          <div class="invalid-feedback">
+                            Please fill in the email
                           </div>
                         </div>
+                      </div>
                     </div>
                     <div class="card-footer text-right">
-                      <button class="btn btn-primary">Save Changes</button>
+                      <button class="btn btn-primary" name="submit">Save Changes</button>
                     </div>
                   </form>
                 </div>

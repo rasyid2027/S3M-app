@@ -1,3 +1,52 @@
+<?php 
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+  header('Location: login.php');
+  exit;
+}
+
+require 'functions.php';
+
+$stmt = $dbh->query("SELECT sid FROM Skill");
+$stmt->execute();
+$sid = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if( isset($_POST['submit']) )
+{
+  
+  $skill = htmlspecialchars(ucwords($_POST['skill']));
+  $query = "INSERT INTO Skill
+              VALUES
+              (NULL, ?)
+          ";
+
+  $stmt = $dbh->prepare($query);
+  $stmt->execute([$skill]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $rows > 0 )
+  {
+    echo "
+          <script>
+            alert('successfully added data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+  } else {
+    echo "
+          <script>
+            alert('failed to add data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+    }
+  
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,9 +82,9 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -81,35 +130,31 @@
               Please fill the field to create new data.
             </p>
 
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>New Data</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Id</label>
-                      <div class="col-sm-12 col-md-7">
-                        <input type="number" class="form-control">
-                      </div>
+            <form action="" method="POST">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4>New Data</h4>
                     </div>
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Skill</label>
-                      <div class="col-sm-12 col-md-7">
-                        <input type="text" class="form-control">
+                    <div class="card-body">
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Skill</label>
+                        <div class="col-sm-12 col-md-7">
+                          <input type="text" class="form-control" name="skill">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
-                      <div class="col-sm-12 col-md-7">
-                        <button class="btn btn-primary">Create Data</button>
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                        <div class="col-sm-12 col-md-7">
+                          <button class="btn btn-primary" name="submit">Create Data</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </section>
       </div>

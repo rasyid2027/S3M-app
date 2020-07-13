@@ -1,5 +1,13 @@
 <?php 
 
+session_start();
+
+if( isset($_SESSION['login']) )
+{
+  header('Location: index.php');
+  exit;
+}
+
 require 'functions.php';
 
 if( isset($_POST['login']) )
@@ -8,25 +16,24 @@ if( isset($_POST['login']) )
   $username = $_POST['username'];
   $password = $_POST['password'];
 
-  $result = mysqli_query($conn, "SELECT * FROM Users WHERE username = '$username'");
-  // var_dump($result);
-  if( mysqli_num_rows($result) === 1 )
+  $stmt = $dbh->prepare("SELECT * FROM Users WHERE username = '$username'");
+  $stmt->execute();
+  $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $username == $row[0]['username'] )
   {
     
-    $row = mysqli_fetch_assoc($result);
-    // var_dump($row);
-    // echo $row['password'];
-    if( sha1($password) == $row['password'] )
+    if( sha1($password) == $row[0]['password'] )
     {
+
+      $_SESSION['login'] = $row[0]['name'];
 
       header('Location: index.php');
       exit;
-    } else {
-      echo "ok";
     }
   }
 
-  // $error = true;
+  $error = true;
   
 }
 

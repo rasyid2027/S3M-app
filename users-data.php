@@ -1,3 +1,30 @@
+<?php 
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+  header('Location: auth-login.php');
+  exit;
+}
+
+require 'functions.php';
+
+$users = $dbh->prepare("SELECT * FROM Users ORDER BY id DESC LIMIT $firstData, $amountData1Page");
+$users->execute();
+$rows = $users->fetchAll(PDO::FETCH_ASSOC);
+
+$amountData1Page = 5;
+$pagin = $dbh->prepare("SELECT * FROM Users");
+$pagin->execute();
+$pgSkill = $pagin->fetchAll(PDO::FETCH_ASSOC);
+$amoutnData = count( $pgSkill );
+$amountPage = ceil( $amoutnData / $amountData1Page );
+$activePage = ( isset($_GET['pg']) ) ? $_GET['pg'] : 1;
+$firstData = ( $amountData1Page * $activePage ) - $amountData1Page;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,9 +57,9 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -79,44 +106,49 @@
                     <th>Role</th>
                     <th>Action</th>
                   </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Irwansyah Saputra</td>
-                    <td>ear_one</td>
-                    <td>Pengurus</td>
-                    <td><a href="features-profile-users.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Hasan Basri</td>
-                    <td>h_sun</td>
-                    <td>pengurus</td>
-                    <td><a href="features-profile-users.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Kusnadi</td>
-                    <td>cause_nut_die</td>
-                    <td>Admin</td>
-                    <td><a href="features-profile-users.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>Rizal Fakhri</td>
-                    <td>zakhri</td>
-                    <td>Admin</td>
-                    <td><a href="features-profile-users.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>Isnap Kiswandi</td>
-                    <td>one_die</td>
-                    <td>Pengurus</td>
-                    <td><a href="features-profile-users.php" class="btn btn-success mr-1">Edit</a><a href="#" class="btn btn-danger">Delete</a></td>
-                  </tr>
+
+                  <?php $i = 1; ?>
+                  <?php foreach( $rows as $row ) { ?>
+                    <tr>
+                      <td><?php echo $i + $firstData; ?></td>
+                      <td><?php echo $row['name']; ?></td>
+                      <td><?php echo $row['username']; ?></td>
+                      <td><?php echo $row['role']; ?></td>
+                      <td>
+                        <a href="features-profile-users.php?id=<?= $row['id'] ?>" class="btn btn-success mr-1">Edit</a>
+                        <a href="#" class="btn btn-danger">Delete</a>
+                      </td>
+                    </tr>
+                  <?php $i++; ?>
+                  <?php } ?>
                 </table>
               </div>
             </div>
+          </div>
+          <div class="card-footer text-center">
+            <nav class="d-inline-block">
+              <ul class="pagination mb-0">
+                <?php if( $activePage > 1 ) { ?>
+                  <li class="page-item">
+                    <a class="page-link" href="?pg= <?php echo $activePage - 1; ?>" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+                  </li>
+                <?php } ?>
+
+                <?php for( $i = 1; $i <= $amountPage; $i++ ) { ?>
+                  <?php if( $i == $activePage ) { ?>
+                    <li class="page-item active"><a class="page-link" href="?pg= <?php echo $i; ?>"><?php echo $i; ?> <span class="sr-only">(current)</span></a></li>
+                  <?php } else { ?>
+                    <li class="page-item"><a class="page-link" href="?pg= <?php echo $i; ?>"><?php echo $i; ?></a></li>
+                  <?php } ?>
+                <?php } ?>
+
+                <?php if( $activePage < $amountPage ) { ?>
+                  <li class="page-item">
+                    <a class="page-link" href="?pg= <?php echo $activePage + 1; ?>"><i class="fas fa-chevron-right"></i></a>
+                  </li>
+                <?php } ?>
+              </ul>
+            </nav>
           </div>
         </section>
       </div>

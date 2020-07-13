@@ -1,3 +1,54 @@
+<?php 
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+  header('Location: auth-login.php');
+  exit;
+}
+
+require 'functions.php';
+
+$id = $_GET['id'];
+$stmt = $dbh->prepare("SELECT * FROM Skill WHERE sid = ?");
+$stmt->execute([$id]);
+$skill = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if( isset($_POST['submit']) )
+{
+  $sid = $_POST['sid'];
+  $skill = htmlspecialchars(ucwords($_POST['skill']));
+  $query = "UPDATE Skill SET
+              skill = ?
+            WHERE sid = ?
+            ";
+
+  $stmt = $dbh->prepare($query);
+  $stmt->execute([$skill, $sid]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $rows > 0 )
+  {
+    echo "
+          <script>
+            alert('successfully edited data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+  } else {
+    echo "
+          <script>
+            alert('failed to edit data')
+            document.location.href = 'skill-data.php';
+          </script>
+        ";
+  }
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,9 +83,9 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="#" class="dropdown-item has-icon text-danger">
+              <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
               </a>
             </div>
@@ -86,17 +137,13 @@
                     <div class="card-body">
                         <div class="row">
                           <div class="form-group col-md-10 col-12">
-                            <label>id</label>
-                            <input type="number" class="form-control" value="1" required="">
-                            <div class="invalid-feedback">
-                              Please fill in the name
-                            </div>
+                            <input type="hidden" class="form-control" name="sid" value="<?= $skill[0]['sid'] ?>" required="">
                           </div>
                         </div>
                         <div class="row">
                           <div class="form-group col-md-10 col-12">
                             <label>Skill</label>
-                            <input type="text" class="form-control" value="PHP" required="">
+                            <input type="text" class="form-control" name="skill" value="<?= $skill[0]['skill'] ?>" required="">
                             <div class="invalid-feedback">
                               Please fill in the email
                             </div>
@@ -104,7 +151,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-right">
-                      <button class="btn btn-primary">Save Changes</button>
+                      <button class="btn btn-primary" name="submit">Save Changes</button>
                     </div>
                   </form>
                 </div>
