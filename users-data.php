@@ -57,7 +57,7 @@ $firstData = ( $amountData1Page * $activePage ) - $amountData1Page;
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']['name']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -116,7 +116,8 @@ $firstData = ( $amountData1Page * $activePage ) - $amountData1Page;
                       <td><?php echo $row['role']; ?></td>
                       <td>
                         <a href="features-profile-users.php?id=<?= $row['id'] ?>" class="btn btn-success mr-1">Edit</a>
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <a href="features-profile-users-pass.php?id=<?= $row['id'] ?>" class="btn btn-warning mr-1">Reset Password</a>
+                        <a href="delete-users.php?id=<?= $row['id'] ?>" class="btn btn-danger" onclick="return confirm('yakin ingin menghapus?')">Delete</a>
                       </td>
                     </tr>
                   <?php $i++; ?>

@@ -91,7 +91,7 @@ if( isset($_POST['submit']) )
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']['name']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -136,7 +136,7 @@ if( isset($_POST['submit']) )
             </p>
 
             <div class="row mt-sm-4">
-              <div class="col-12 col-md-12 col-lg-7">
+              <div class="col-12 col-md-12 col-lg-12">
                 <div class="card">
                   <form method="post" class="needs-validation" novalidate="">
                     <div class="card-header">

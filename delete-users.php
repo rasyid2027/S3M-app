@@ -1,10 +1,18 @@
-<?php 
+<?php
+
+session_start();
+
+if( !isset($_SESSION['login']) )
+{
+    header('Location: auth-login.php');
+    exit;
+}
 
 require 'functions.php';
 
 $id = $_GET['id'];
 
-$query = "DELETE FROM Santri WHERE id = ?";
+$query = "DELETE FROM Users WHERE id = ?";
 $stmt = $dbh->prepare($query);
 $stmt->execute([$id]);
 
@@ -13,14 +21,14 @@ if( $stmt == true )
     echo "
             <script>
                 alert('successfully deleted data')
-                document.location.href = 'santri-data.php';
+                document.location.href = 'users-data.php';
             </script>
         ";
 } else {
     echo "
             <script>
                 alert('failed to delete data')
-                document.location.href = 'santri-data.php';
+                document.location.href = 'users-data.php';
             </script>
         ";
 }

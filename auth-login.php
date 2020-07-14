@@ -18,22 +18,34 @@ if( isset($_POST['login']) )
 
   $stmt = $dbh->prepare("SELECT * FROM Users WHERE username = '$username'");
   $stmt->execute();
-  $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if( $username == $row[0]['username'] )
+
+  if( $username == $row['username'] )
   {
     
-    if( sha1($password) == $row[0]['password'] )
+    if( sha1($password) == $row['password'] )
     {
+      unset($row['password']);
 
-      $_SESSION['login'] = $row[0]['name'];
+      $_SESSION['login'] = $row;
 
       header('Location: index.php');
       exit;
+    } else {
+        echo "
+              <script>
+                alert('Wrong password')
+                document.location.href = 'auth-login.php';
+              </script>
+            ";
     }
+  } else {
+      header('Location: auth-login.php');
+      exit;
+
   }
 
-  $error = true;
   
 }
 
@@ -75,7 +87,7 @@ if( isset($_POST['login']) )
                 <form method="POST" action="" class="needs-validation" novalidate="">
                   <div class="form-group">
                     <label for="username">Username</label>
-                    <input id="username" type="username" class="form-control" name="username" tabindex="1" required autofocus>
+                    <input id="username" type="username" class="form-control" name="username" tabindex="1" required autofocus autocomplete="off">
                     <div class="invalid-feedback">
                       Please fill in your username
                     </div>

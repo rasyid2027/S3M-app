@@ -8,6 +8,41 @@ if( !isset($_SESSION['login']) )
   exit;
 }
 
+require 'functions.php';
+
+if( isset($_POST['submit']) )
+{
+  $name = htmlspecialchars(ucwords($_POST['name']));
+  $username = htmlspecialchars($_POST['username']);
+  $pass = htmlspecialchars(sha1($_POST['password']));
+  $role = htmlspecialchars(ucwords($_POST['role']));
+  $query = "INSERT INTO Users
+              VALUES
+              (NULL, ?, ?, ?, ?)
+          ";
+
+  $stmt = $dbh->prepare($query);
+  $stmt->execute([$name, $username, $pass, $role]);
+  $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if( $users > 0 )
+  {
+    echo "
+          <script>
+            alert('successfully added data')
+            document.location.href = 'users-data.php';
+          </script>
+        ";
+  } else {
+    echo "
+          <script>
+            alert('failed to add data')
+            document.location.href = 'users-data.php';
+          </script>
+        ";
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +80,7 @@ if( !isset($_SESSION['login']) )
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, Admin</div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']['name']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -93,44 +128,52 @@ if( !isset($_SESSION['login']) )
               Please fill the field to create new data.
             </p>
 
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>New Data</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name</label>
-                      <div class="col-sm-12 col-md-7">
-                        <input type="text" class="form-control">
-                      </div>
+            <form action="" method="POST">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4>New Data</h4>
                     </div>
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">username</label>
-                      <div class="col-sm-12 col-md-7">
-                        <input type="text" class="form-control inputtags">
+                    <div class="card-body">
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name</label>
+                        <div class="col-sm-12 col-md-7">
+                          <input type="text" class="form-control" name="name">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Role</label>
-                      <div class="col-sm-12 col-md-7">
-                        <select class="form-control selectric">
-                          <option>1. Admin</option>
-                          <option>2. Pengurus</option>
-                        </select>
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Username</label>
+                        <div class="col-sm-12 col-md-7">
+                          <input type="text" class="form-control inputtags"  name="username">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                      <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
-                      <div class="col-sm-12 col-md-7">
-                        <button class="btn btn-primary">Create Data</button>
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Password</label>
+                        <div class="col-sm-12 col-md-7">
+                          <input type="password" class="form-control inputtags"  name="password">
+                        </div>
+                      </div>
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Role</label>
+                        <div class="col-sm-12 col-md-7">
+                          <select class="form-control selectric" name="role">
+                            <option>Admin</option>
+                            <option>Pengurus</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row mb-4">
+                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                        <div class="col-sm-12 col-md-7">
+                          <button class="btn btn-primary" name="submit">Create Data</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </section>
       </div>

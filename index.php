@@ -2,6 +2,8 @@
 
 session_start();
 
+
+
 if( !isset($_SESSION['login']) )
 {
   header('Location: auth-login.php');
@@ -42,7 +44,7 @@ if( !isset($_SESSION['login']) )
         <ul class="navbar-nav navbar-right">
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']; ?></div></a>
+            <div class="d-sm-none d-lg-inline-block">Hi, <?= $_SESSION['login']['name']; ?></div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="logout.php" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -59,6 +61,8 @@ if( !isset($_SESSION['login']) )
           <div class="sidebar-brand sidebar-brand-sm">
             <a href="index.php">S3M</a>
           </div>
+          <?php $admin = "Admin"; ?>
+          <?php if( $_SESSION['login']['role'] == $admin ) { ?>
           <ul class="sidebar-menu">
               <li class="menu-header">Dashboard</li>
               <li class="active"><a class="nav-link" href="index.php"><i class="fas fa-home"></i> <span>Home</span></a></li>
@@ -66,7 +70,15 @@ if( !isset($_SESSION['login']) )
               <li><a class="nav-link" href="santri-data.php"><i class="fas fa-table"></i> <span>Santri Data</span></a></li>
               <li><a class="nav-link" href="skill-data.php"><i class="fas fa-laptop-code"></i> <span>Skill</span></a></li>
               <li><a class="nav-link" href="users-data.php"><i class="fas fa-users"></i> <span>Users</span></a></li>
+          </ul>
+          <?php } else { ?>
+            <ul class="sidebar-menu">
+              <li class="menu-header">Dashboard</li>
+              <li class="active"><a class="nav-link" href="index.php"><i class="fas fa-home"></i> <span>Home</span></a></li>
+              <li class="menu-header">Menu</li>
+              <li><a class="nav-link" href="santri-data.php"><i class="fas fa-table"></i> <span>Santri Data</span></a></li>
             </ul>
+          <?php } ?>
         </aside>
       </div>
 

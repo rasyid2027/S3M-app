@@ -14,40 +14,49 @@ $id = $_GET['id'];
 $stmt = $dbh->prepare("SELECT * FROM Users WHERE id = ?");
 $stmt->execute([$id]);
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// var_dump($id);
+// die;
 
 if( isset($_POST['submit']) )
 {
-  $id = $_POST['id'];
-  $name = htmlspecialchars(ucwords($_POST['name']));
-  $username = $_POST['username'];
-  $role = htmlspecialchars(ucwords($_POST['role']));
-  $query = "UPDATE Users SET
-              name = ?,
-              username = ?,
-              role = ?
-            WHERE id = ?
-            ";
-
-  $stmt = $dbh->prepare($query);
-  $stmt->execute([$name, $username, $role, $id]);
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  if( $rows > 0 )
+  if( $_POST['confirm'] === $_POST['password'] )
   {
-    echo "
-          <script>
-            alert('successfully edited data')
-            document.location.href = 'users-data.php';
-          </script>
-        ";
+    $id = $_POST['id'];
+    $pass = htmlspecialchars(sha1($_POST['password']));
+    $query = "UPDATE Users SET
+                password = ?
+              WHERE id = ?
+              ";
+
+    $stmt = $dbh->prepare($query);
+    $stmt->execute([$pass, $id]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if( $rows > 0 )
+    {
+      echo "
+            <script>
+              alert('successfully edited data')
+              document.location.href = 'users-data.php';
+            </script>
+          ";
+    } else {
+      echo "
+            <script>
+              alert('failed to edit data')
+              document.location.href = 'users-data.php';
+            </script>
+          ";
+    }
   } else {
-    echo "
-          <script>
-            alert('failed to edit data')
-            document.location.href = 'users-data.php';
-          </script>
-        ";
+      echo "
+            <script>
+              alert('password doesn\'t match')
+              document.location.href = 'users-data.php';
+            </script>
+          ";
   }
+  
 }
 
 ?>
@@ -118,16 +127,16 @@ if( isset($_POST['submit']) )
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>Users Profile</h1>
+            <h1>Reset Users</h1>
             <div class="section-header-breadcrumb">
               <div class="breadcrumb-item active"><a href="#">Users</a></div>
-              <div class="breadcrumb-item">Users Profile</div>
+              <div class="breadcrumb-item">Reset Users</div>
             </div>
           </div>
           <div class="section-body">
             <h2 class="section-title">Hi, Admin!</h2>
             <p class="section-lead">
-              Change information about this data on this page.
+              Reset password of this data on this page.
             </p>
 
             <div class="row mt-sm-4">
@@ -138,43 +147,32 @@ if( isset($_POST['submit']) )
                       <h4>Edit Users Profile</h4>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <input type="hidden" class="form-control" name="id" value="<?= $users[0]['id'] ?>" required="">
-                          </div>
-                          <div class="form-group col-md-10 col-12">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="name" value="<?= $users[0]['name'] ?>" required="">
-                            <div class="invalid-feedback">
-                              Please fill in the name
-                            </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <input type="hidden" class="form-control" name="id" value="<?= $users[0]['id'] ?>" required="">
+                        </div>
+                        <div class="form-group col-md-10 col-12">
+                          <label>New Password</label>
+                          <input type="password" class="form-control" data-toggle="tooltip" data-placement="right" title="Max. 20 characters" name="password" maxlength="20" placeholder="Enter a new password" value="" required="">
+                          <div class="invalid-feedback">
+                            Please fill in the field
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <label>Username</label>
-                            <input type="text" class="form-control" data-toggle="tooltip" data-placement="right" title="Capital and non-Capital letters affect when logging in" name="username" value="<?= $users[0]['username'] ?>" required="">
-                            <div class="invalid-feedback">
-                              Please fill in the field
-                            </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-10 col-12">
+                          <label>Confirm Password</label>
+                          <input type="password" class="form-control" data-toggle="tooltip" data-placement="right" title="Max. 20 characters" name="confirm" maxlength="20" placeholder="Confirm new password" value="" required="">
+                          <div class="invalid-feedback">
+                            Please fill in the field
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="form-group col-md-10 col-12">
-                            <label class="mr-2">Role</label>
-                            <select class="form-control selectric" name="role">
-                              <option value="Admin">Admin</option>
-                              <option value="Pengurus">Pengurus</option>
-                            </select>
-                            <div class="invalid-feedback">
-                              Please fill in the field
-                            </div>
-                          </div>
-                        </div>
+                      </div>
                       </div>
                       <div class="card-footer text-right">
                         <button class="btn btn-primary" name="submit">Save Changes</button>
                       </div>
+                    </div>
                   </form>
                 </div>
               </div>
